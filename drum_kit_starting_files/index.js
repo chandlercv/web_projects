@@ -44,13 +44,25 @@ function playSound (key) {
 document.querySelectorAll(".drum").forEach(item => {
   item.addEventListener("click", function () {
 
-    triggerInnerHTML = this.innerHTML
-    playSound(triggerInnerHTML)
+    triggerInnerHTML = this.innerHTML;
+    playSound(triggerInnerHTML);
+    buttonAnimation(triggerInnerHTML);
     
 
   });
 });
 
 document.addEventListener("keydown", function(event) {
-  playSound(event.key)
+  playSound(event.key);
+  buttonAnimation(event.key);
 });
+
+function buttonAnimation(key) {
+  let button = document.querySelector(`.${key}`)
+  
+  button.classList.add("pressed");
+
+  setTimeout(function () { 
+    button.classList.remove("pressed");
+  }, 100);
+}
