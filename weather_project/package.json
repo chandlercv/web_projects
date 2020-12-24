@@ -1,13 +1,12 @@
 {
-  "name": "my_express_server",
+  "name": "weather_project",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Charles V Chandler, Jr.",
+  "author": "Charles Chandler",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
