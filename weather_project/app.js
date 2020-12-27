@@ -5,30 +5,21 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
- res.sendFile(`${__dirname}/index.html`);
+  res.sendFile(`${__dirname}/index.html`);
 });
 
 app.listen(3145, () => {
   console.log('server is running on port 3145');
-
-});
-
-app.post('/', (req, res) => {
-  console.log('Post received');
-  console.log(req.body.locMethod);
-  console.log(req.body.locator);
-  const { locMethod, locator} = req.body;
-  getWeather(res, locMethod, locator, 'imperial');
 });
 
 function getWeather(res, locMethod, locator, units) {
   const apiKey = 'd0b7df5b8a7c1a66d06f26c12b56f258';
 
   let unitSymbol;
-  switch(units) {
+  switch (units) {
     case 'imperial':
       unitSymbol = '&#8457;';
       break;
@@ -59,3 +50,11 @@ function getWeather(res, locMethod, locator, units) {
     });
   });
 }
+
+app.post('/', (req, res) => {
+  console.log('Post received');
+  console.log(req.body.locMethod);
+  console.log(req.body.locator);
+  const { locMethod, locator } = req.body;
+  getWeather(res, locMethod, locator, 'imperial');
+});
