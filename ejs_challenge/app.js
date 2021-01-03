@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // eslint-disable-next-line no-unused-vars
 const ejs = require('ejs');
+const _ = require('lodash');
 
 const port = 3145;
 
@@ -47,7 +48,7 @@ app.post('/compose', (req, res) => {
 
 app.get('/post/:postTitle', (req, res) => {
   const { postTitle } = req.params;
-  if (posts.some((post) => post.title === postTitle)) {
+  if (posts.some((post) => _.lowerCase(post.title) === _.lowerCase(postTitle))) {
     console.log('match found');
   } else {
     console.log('no match found');
