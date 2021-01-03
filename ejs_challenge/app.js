@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
+  // const homePosts = posts.map()
   res.render('home', { homeStartingText: homeStartingContent, posts });
 });
 
@@ -46,11 +47,14 @@ app.post('/compose', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/post/:postTitle', (req, res) => {
+app.get('/posts/:postTitle', (req, res) => {
   const { postTitle } = req.params;
-  if (posts.some((post) => _.lowerCase(post.title) === _.lowerCase(postTitle))) {
-    console.log('match found');
+
+  const matchingPost = posts.find((post) => _.lowerCase(post.title) === _.lowerCase(postTitle));
+  if (matchingPost) {
+    res.render('post', { post: matchingPost });
   } else {
+    res.redirect('/');
     console.log('no match found');
   }
 });
