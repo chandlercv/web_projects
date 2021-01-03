@@ -21,8 +21,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  // const homePosts = posts.map()
-  res.render('home', { homeStartingText: homeStartingContent, posts });
+  const homePosts = posts.map((post) => {
+    const homePost = {
+      title: post.title,
+      body: _.truncate(post.body, { length: 100 }),
+      kebabTitle: _.kebabCase(post.title),
+    };
+    return homePost;
+  });
+  res.render('home', { homeStartingText: homeStartingContent, posts: homePosts });
 });
 
 app.get('/about', (req, res) => {

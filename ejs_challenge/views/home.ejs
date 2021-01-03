@@ -4,6 +4,6 @@
 <% const reversedPosts = [...posts].reverse(); %>
 <% reversedPosts.forEach( (post) => { %>
   <h1><%= post.title %></h1>
-  <p><%= post.body %> </p>
+  <p><%= post.body %><a href="posts/<%= post.kebabTitle %>">Read More</a></p>
 <% }); %>
 <%- include("partials/footer") -%>
