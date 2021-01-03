@@ -45,6 +45,11 @@ app.post('/compose', (req, res) => {
   res.redirect('/');
 });
 
+app.get('/post/:postTitle', (req, res) => {
+  const { postTitle } = req.params;
+  console.log(postTitle);
+});
+
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
