@@ -28,6 +28,7 @@ const itemsSchema = new mongoose.Schema({
 });
 
 const Item = mongoose.model('Item', itemsSchema);
+const WorkItem = mongoose.model('WorkItem', itemsSchema);
 
 const welcome = new Item({ name: 'Welcome to your todolist!' });
 const addItem = new Item({ name: 'Hit the + button to add a new item' });
@@ -59,16 +60,25 @@ mongoose.connect('mongodb://localhost:27017/todolistDB', { useNewUrlParser: true
       const { newItem, list } = req.body;
 
       if (list === 'Work Items') {
-        workItems.push(newItem);
+        const newWorkListItem = new WorkItem({ name: newItem });
+        newWorkListItem.save();
         res.redirect('/work');
       } else {
-        items.push(newItem);
+        const newListItem = new Item({ name: newItem });
+        newListItem.save();
         res.redirect('/');
       }
     });
 
+    app.post('/delete', (req, res) => {
+      const completedItemID = req.body.completed;
+      Item.deleteOne({ _id: completedItemID })
+        .then(() => res.redirect('/'));
+    });
+
     app.get('/work', (req, res) => {
-      res.render('list', { listTitle: 'Work Items', listItems: workItems });
+      WorkItem.find({})
+        .then((retItems) => res.render('list', { listTitle: 'Work Items', listItems: retItems }));
     });
 
     app.get('/about', (req, res) => {
