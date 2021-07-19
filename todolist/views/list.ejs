@@ -1,5 +1,6 @@
 <%- include("header") -%>
         <div class="box" id="heading">
+            <h2><%= currentDay %></h2>
             <h1><%= listTitle %></h1>
         </div>
 
@@ -10,6 +11,7 @@
                     <input type="checkbox" name="completed" value="<%=listItem._id%>" onChange="this.form.submit()">
                     <p><%=listItem.name %></p>
                 </div>
+                <input type="hidden" name="listName" value="<%= listTitle %>"></input>
             </form>
             <% }); %>
 
