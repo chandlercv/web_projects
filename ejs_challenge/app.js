@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // eslint-disable-next-line no-unused-vars
 const ejs = require('ejs');
+const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const port = 3145;
@@ -13,7 +14,26 @@ const contactContent = 'Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 
-const posts = [];
+const postsSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: String,
+});
+
+const Post = mongoose.model('Post', postsSchema);
+
+mongoose.connect('mongodb://dadtab:27017/dogBlog', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+  .then(() => Post.find({}))
+  .then((posts) => {
+    console.log(posts);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// const posts = [];
 
 app.set('view engine', 'ejs');
 
@@ -21,15 +41,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  const homePosts = posts.map((post) => {
-    const homePost = {
-      title: post.title,
-      body: _.truncate(post.body, { length: 100 }),
-      kebabTitle: _.kebabCase(post.title),
-    };
-    return homePost;
-  });
-  res.render('home', { homeStartingText: homeStartingContent, posts: homePosts });
+  Post.find({})
+    .then((posts) => {
+      const homePosts = posts.map((post) => {
+        const homePost = {
+          title: post.title,
+          body: _.truncate(post.content, { length: 100 }),
+          kebabTitle: _.kebabCase(post.title),
+        };
+        return homePost;
+      });
+      res.render('home', { homeStartingText: homeStartingContent, posts: homePosts });
+    });
 });
 
 app.get('/about', (req, res) => {
@@ -46,24 +69,25 @@ app.get('/compose', (req, res) => {
 
 app.post('/compose', (req, res) => {
   const { postTitle, postBody } = req.body;
-  const post = {
-    title: postTitle,
-    body: postBody,
-  };
-  posts.push(post);
-  res.redirect('/');
+  const newPost = new Post({ title: postTitle, content: postBody });
+  newPost.save()
+    .then(() => {
+      res.redirect('/');
+    });
 });
 
 app.get('/posts/:postTitle', (req, res) => {
   const { postTitle } = req.params;
 
-  const matchingPost = posts.find((post) => _.lowerCase(post.title) === _.lowerCase(postTitle));
-  if (matchingPost) {
-    res.render('post', { post: matchingPost });
-  } else {
-    res.redirect('/');
-    console.log('no match found');
-  }
+  Post.findOne({ title: new RegExp(`^${_.lowerCase(postTitle)}$`, 'i') })
+    .then((matchingPost) => {
+      if (matchingPost) {
+        res.render('post', { post: matchingPost });
+      } else {
+        res.redirect('/');
+        console.log('no match found');
+      }
+    });
 });
 
 app.listen(port, () => {
